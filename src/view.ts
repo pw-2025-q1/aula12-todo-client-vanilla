@@ -27,8 +27,7 @@ export class TodoView {
         this.todoList = querySelectorNullSafe<HTMLUListElement>('#todo-list');
         this.todoItemTemplate = querySelectorNullSafe<HTMLTemplateElement>('#todo-item-template');
 
-        this.addTodoButton.addEventListener('click', (ev) => {
-            ev.preventDefault();
+        this.addTodoButton.addEventListener('click', () => {
             this.handleAddTodo();
         });
     }
