@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo App</title>
+
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <div id="app">
+      <form class="input-container">
+        <input type="text" id="new-todo" placeholder="Enter a new todo" required />
+        <button id="add-todo" type="submit">Add</button>
+      </form>
+      <ul id="todo-list">
+        <!-- Todo items will be dynamically added here -->
+      </ul>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+
+    <template id="todo-item-template">
+      <li>
+        <article class="todo-item" data-id="">
+          <p class="todo-text">Item text</p>
+          <button class="delete-todo">x</button>
+        </article>
+      </li>
+    </template>
+  </body>
+</html>
