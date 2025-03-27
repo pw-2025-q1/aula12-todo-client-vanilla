@@ -1,5 +1,3 @@
-// /workspaces/09-todo-client-vanilla/src/repo.ts
-
 export interface TodoItem {
     id: number;
     description: string;
@@ -17,7 +15,6 @@ const API_BASE_URL = `https://todo-server-spa-748269297649.southamerica-east1.ru
 
 interface Repository<T> {
     getAll(sorted: boolean): Promise<T[]>;
-    getById(id: number): Promise<T>;
     insert(todo: T): Promise<void>;
     delete(id: number): Promise<void>;
 }
@@ -36,14 +33,6 @@ export class TodoRepository implements Repository<TodoItem> {
         return sorted ? items.sort((a, b) => a.description.localeCompare(b.description)) : items;
     }
 
-    async getById(id: number): Promise<TodoItem> {
-        const response = await fetch(`${API_BASE_URL}/${id}`);
-        if (!response.ok) {
-            throw new Error(`Failed to fetch todo with id ${id}: ${await response.text()}`);
-        }
-        return response.json();
-    }
-
     async insert(todo: TodoItem): Promise<void> {
         const response = await fetch(API_BASE_URL, {
             method: 'POST',
@@ -56,20 +45,6 @@ export class TodoRepository implements Repository<TodoItem> {
             throw new Error(`Failed to create todo: ${await response.text()}`);
         } 
     }
-
-    // async updateTodo(id: number, todo: Partial<TodoItem>): Promise<TodoItem> {
-    //     const response = await fetch(`${API_BASE_URL}/${id}`, {
-    //         method: 'PUT',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         },
-    //         body: JSON.stringify(todo),
-    //     });
-    //     if (!response.ok) {
-    //         throw new Error(`Failed to update todo with id ${id}: ${await response.text()}`);
-    //     }
-    //     return response.json();
-    // }
 
     async delete(id: number): Promise<void> {
         const response = await fetch(`${API_BASE_URL}/${id}`, {
