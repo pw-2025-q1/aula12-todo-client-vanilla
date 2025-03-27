@@ -14,18 +14,22 @@ export class TodoView {
             throw new Error(`Element not found: ${selector}`);
         }
 
-        this.newTodoInput = document.querySelector('#new-todo')
-            ?? elementNotFoundError('#new-todo');
-        this.addTodoButton = document.querySelector('#add-todo')
-            ?? elementNotFoundError('#add-todo');
-        this.todoList = document.querySelector('#todo-list')
-            ?? elementNotFoundError('#todo-list');
-        this.todoItemTemplate = document.querySelector('#todo-item-template')
-            ?? elementNotFoundError('#todo-item-template');
+        const querySelector = <T extends HTMLElement>(selector: string): T => {
+            const element = document.querySelector<T>(selector);
+            if (!element) {
+                elementNotFoundError(selector);
+            }
+            return element;
+        };
+
+        this.newTodoInput = querySelector<HTMLInputElement>('#new-todo');
+        this.addTodoButton = querySelector<HTMLButtonElement>('#add-todo');
+        this.todoList = querySelector<HTMLUListElement>('#todo-list');
+        this.todoItemTemplate = querySelector<HTMLTemplateElement>('#todo-item-template');
 
         this.addTodoButton.addEventListener('click', (ev) => {
             ev.preventDefault();
-            this.handleAddTodo()
+            this.handleAddTodo();
         });
     }
 
@@ -75,15 +79,31 @@ export class TodoView {
     }
 
     private createTodoElement(todo: TodoItem): HTMLElement {
-        const todoElement = this.todoItemTemplate.content.cloneNode(true) as HTMLElement;
-        const todoText = todoElement.querySelector('.todo-text') as HTMLElement;
-        const deleteButton = todoElement.querySelector('.delete-todo') as HTMLButtonElement;
-        const articleElement = todoElement.querySelector('article') as HTMLElement;
+        const templateFragment = this.todoItemTemplate.content.cloneNode(true) as DocumentFragment;
 
+        const todoText = templateFragment.querySelector<HTMLParagraphElement>('.todo-text');
+        if (!todoText) {
+            throw new Error('Template is missing .todo-text element');
+        }
         todoText.textContent = todo.description;
+
+        const articleElement = templateFragment.querySelector<HTMLElement>('article');
+        if (!articleElement) {
+            throw new Error('Template is missing article element');
+        }
         articleElement.setAttribute('data-id', todo.id.toString());
+
+        const deleteButton = templateFragment.querySelector<HTMLButtonElement>('.delete-todo');
+        if (!deleteButton) {
+            throw new Error('Template is missing .delete-todo button');
+        }
         deleteButton.addEventListener('click', () => this.handleDeleteTodo(todo.id));
 
-        return todoElement.firstElementChild as HTMLElement;
+        const firstElementChild = templateFragment.firstElementChild;
+        if (!firstElementChild || !(firstElementChild instanceof HTMLElement)) {
+            throw new Error('Template does not have a valid root element');
+        }
+
+        return firstElementChild;
     }
 }
