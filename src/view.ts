@@ -14,7 +14,7 @@ export class TodoView {
             throw new Error(`Element not found: ${selector}`);
         }
 
-        const querySelector = <T extends HTMLElement>(selector: string): T => {
+        const querySelectorNullSafe = <T extends HTMLElement>(selector: string): T => {
             const element = document.querySelector<T>(selector);
             if (!element) {
                 elementNotFoundError(selector);
@@ -22,10 +22,10 @@ export class TodoView {
             return element;
         };
 
-        this.newTodoInput = querySelector<HTMLInputElement>('#new-todo');
-        this.addTodoButton = querySelector<HTMLButtonElement>('#add-todo');
-        this.todoList = querySelector<HTMLUListElement>('#todo-list');
-        this.todoItemTemplate = querySelector<HTMLTemplateElement>('#todo-item-template');
+        this.newTodoInput = querySelectorNullSafe<HTMLInputElement>('#new-todo');
+        this.addTodoButton = querySelectorNullSafe<HTMLButtonElement>('#add-todo');
+        this.todoList = querySelectorNullSafe<HTMLUListElement>('#todo-list');
+        this.todoItemTemplate = querySelectorNullSafe<HTMLTemplateElement>('#todo-item-template');
 
         this.addTodoButton.addEventListener('click', (ev) => {
             ev.preventDefault();
